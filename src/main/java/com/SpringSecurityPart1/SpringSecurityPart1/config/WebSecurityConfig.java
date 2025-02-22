@@ -1,5 +1,7 @@
 package com.SpringSecurityPart1.SpringSecurityPart1.config;
 
+import com.SpringSecurityPart1.SpringSecurityPart1.filters.JwtAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.apache.catalina.util.SessionConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,20 +18,26 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
+    private  final JwtAuthFilter jwtAuthFilter;
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity
                 .authorizeHttpRequests(auth-> auth
                         .requestMatchers("/posts","/error","/auth/**").permitAll()
-                        .requestMatchers("/posts/**").hasAnyRole("ADMIN")
+//                        .requestMatchers("/posts/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated())
                 .csrf(csrf->csrf.disable())
-                .sessionManagement(sessionConfig-> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(sessionConfig-> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
              //   .formLogin(Customizer.withDefaults());
 
 
@@ -51,10 +59,6 @@ public class WebSecurityConfig {
 //        return new InMemoryUserDetailsManager(userDetails,adminUser);
 //    }
 
-    @Bean
-    PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
