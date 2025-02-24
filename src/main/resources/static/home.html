@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google OAuth2.0 Login</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jwt-decode/4.0.0/jwt-decode.umd.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .login-btn {
+            background-color: #4285f4;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        .login-btn:hover {
+            background-color: #357abd;
+        }
+        .user-info {
+            margin-top: 20px;
+            display: none;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Welcome</h1>
+    <button id="loginBtn" class="login-btn">
+       You have successfully loggedIn using GoogleOAuth2.0
+    </button>
+    <div id="userInfo" class="user-info">
+        <h2>User Profile</h2>
+        <p id="userName"></p>
+        <p id="userEmail"></p>
+        <button id="logoutBtn" class="logout-btn">Sign Out</button>
+    </div>
+</div>
+</body>
+</html>
