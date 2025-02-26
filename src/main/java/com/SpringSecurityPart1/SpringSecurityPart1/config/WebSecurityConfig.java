@@ -44,12 +44,13 @@ public class WebSecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(auth-> auth
                         .requestMatchers(publicRoutes).permitAll()
-                     .requestMatchers(HttpMethod.GET,"/posts/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/posts/**").hasAnyRole(ADMIN.name(), CREATOR.name())
-                        .requestMatchers(HttpMethod.POST,"/posts/**").hasAnyAuthority(Permission.POST_CREATE.name())
-                     //   .requestMatchers(HttpMethod.GET,"/posts/**").hasAnyAuthority(Permission.POST_VIEW.name())
-                        .requestMatchers(HttpMethod.PUT,"/posts/**").hasAnyAuthority(Permission.POST_UPDATE.name())
-                        .requestMatchers(HttpMethod.DELETE,"/posts/**").hasAnyAuthority(Permission.POST_DELETE.name())
+                        .requestMatchers("/posts/**").authenticated()
+//                     .requestMatchers(HttpMethod.GET,"/posts/**").permitAll()
+//                        .requestMatchers(HttpMethod.POST,"/posts/**").hasAnyRole(ADMIN.name(), CREATOR.name())
+//                        .requestMatchers(HttpMethod.POST,"/posts/**").hasAnyAuthority(Permission.POST_CREATE.name())
+//                     //   .requestMatchers(HttpMethod.GET,"/posts/**").hasAnyAuthority(Permission.POST_VIEW.name())
+//                        .requestMatchers(HttpMethod.PUT,"/posts/**").hasAnyAuthority(Permission.POST_UPDATE.name())
+//                        .requestMatchers(HttpMethod.DELETE,"/posts/**").hasAnyAuthority(Permission.POST_DELETE.name())
 
                         .anyRequest().authenticated())
                 .csrf(csrf->csrf.disable())
