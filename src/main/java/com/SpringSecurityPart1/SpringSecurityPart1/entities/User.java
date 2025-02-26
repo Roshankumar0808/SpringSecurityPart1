@@ -50,7 +50,7 @@ public class User implements UserDetails {
                 role->{
                     Set<SimpleGrantedAuthority>permissions= PermissionMapping.getAuthoritiesForRole(role);
                     authorities.addAll(permissions);
-                    authorities.add(new SimpleGrantedAuthority("ROLE"+role.name()));
+                    authorities.add(new SimpleGrantedAuthority("ROLE_"+role.name()));
                 }
 
         );

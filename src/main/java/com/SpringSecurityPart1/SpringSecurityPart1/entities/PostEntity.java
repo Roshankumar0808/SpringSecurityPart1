@@ -19,4 +19,8 @@ public class PostEntity {
     private String title;
  //   @NotAudited
     private String description;
+
+    @ManyToOne
+    private User author;
+
 }
