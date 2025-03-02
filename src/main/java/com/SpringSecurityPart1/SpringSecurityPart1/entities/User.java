@@ -31,7 +31,7 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private String name;
-
+    private Long sessionCount;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;

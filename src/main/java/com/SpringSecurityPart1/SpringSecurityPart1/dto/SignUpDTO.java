@@ -11,6 +11,7 @@ public class SignUpDTO {
     private String email;
     private String password;
     private String name;
+    private Long sessionCount;
     private Set<Role> roles;
     private Set<Permission> permissions;
 }

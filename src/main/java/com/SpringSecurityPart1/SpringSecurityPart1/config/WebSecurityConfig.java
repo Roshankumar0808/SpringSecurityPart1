@@ -59,7 +59,7 @@ public class WebSecurityConfig {
                 .oauth2Login(oauth2Config -> oauth2Config
                                 .failureUrl("/login?error=true")
                                 .successHandler(oAuth2SuccessHandler)
-                        // .successHandler(oAuth2SuccessHandler)
+
                 );
 
              //   .formLogin(Customizer.withDefaults());

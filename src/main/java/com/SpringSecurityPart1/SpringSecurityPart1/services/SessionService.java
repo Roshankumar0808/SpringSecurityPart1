@@ -18,11 +18,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SessionService {
     private final SessionRepository sessionRepository;
-    private final int SESSION_LIMIT=2;
+    //private final int SESSION_LIMIT=2;
     public void generateNewSession(User user,String refreshToken){
         List<Session> userSession=sessionRepository.findByUser(user);
         log.info(Integer.toString(userSession.size()));
-        if(userSession.size()>=SESSION_LIMIT){
+        if(userSession.size()>=user.getSessionCount()){
             userSession.sort(Comparator.comparing(Session::getLastUsedAt));
                 Session leastRecentlyUsedSession = userSession.getFirst();
                 sessionRepository.delete(leastRecentlyUsedSession);

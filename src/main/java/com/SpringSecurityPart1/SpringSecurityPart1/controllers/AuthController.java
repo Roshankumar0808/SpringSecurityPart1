@@ -103,13 +103,6 @@ public class AuthController {
                 request.getSession().invalidate();
             }
 
-         //   response.reset();
-//            Cookie cookie = new Cookie("refreshtoken", null);
-//            cookie.setMaxAge(0); // Expire immediately
-//            cookie.setHttpOnly(true);
-//            cookie.setSecure("production".equals(deployenv));
-//            cookie.setPath("/"); // Must use same path as set in login
-//            response.addCookie(cookie);
             Cookie cookie=new Cookie("refreshtoken","abc");
             cookie.setHttpOnly(true);
             cookie.setSecure("production".equals(deployenv));
@@ -125,12 +118,9 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<LoginResponseDTO>refresh(HttpServletRequest request){
-       String refereshToken = Arrays.stream(request.getCookies()).
-                filter(cookie->"refreshtoken".equals(cookie.getName()))
-                .findFirst().map(Cookie::getValue)
-                .orElseThrow(()->new AuthenticationServiceException("Refresh Token Not Found"));
-        LoginResponseDTO loginResponseDTO=authService.refreshToken(refereshToken);
+    public ResponseEntity<LoginResponseDTO>refresh(HttpServletRequest request, HttpServletResponse response){
+
+        LoginResponseDTO loginResponseDTO=authService.refreshToken(request, response);
         return ResponseEntity.ok(loginResponseDTO);
     }
 }

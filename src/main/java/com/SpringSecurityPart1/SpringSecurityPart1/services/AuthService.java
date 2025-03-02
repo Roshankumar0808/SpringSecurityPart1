@@ -10,14 +10,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -29,6 +33,8 @@ public class AuthService {
     private final UserService userService;
     private final SessionService sessionService;
     private final SessionRepository sessionRepository;
+    @Value("${deploy.env}")
+    private String deployenv;
     public LoginResponseDTO login(LoginDTO loginDTO) {
 
         Authentication authentication= authenticationManager.authenticate(
@@ -46,12 +52,31 @@ public class AuthService {
 
 
 
-    public LoginResponseDTO refreshToken(String refereshToken) {
-
+    public LoginResponseDTO refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        String refereshToken = Arrays.stream(request.getCookies()).
+                filter(cookie->"refreshtoken".equals(cookie.getName()))
+                .findFirst().map(Cookie::getValue)
+                .orElseThrow(()->new AuthenticationServiceException("Refresh Token Not Found"));
         Long userId=jwtService.getUserIdFromToken(refereshToken);
         sessionService.validateSession(refereshToken);
         User user=userService.getUserById(userId);
+        if (refereshToken != null) {
+            Optional<Session> session = sessionRepository.findByRefreshToken(refereshToken);
+            if (session.isPresent()) {
+                sessionRepository.delete(session.get());
+                log.info("Session deleted for user: " + user.getUsername());
+            }
+        }
+
+        if (request.getSession(false) != null) {
+            request.getSession().invalidate();
+        }
         String accessToken=jwtService.generateAccessToken(user);
-        return new LoginResponseDTO(user.getId(),accessToken,refereshToken);
+        String refreshToken=jwtService.generateRefreshToken(user);
+        Cookie cookie=new Cookie("refreshtoken",refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure("production".equals(deployenv));
+        response.addCookie(cookie);
+        return new LoginResponseDTO(user.getId(),accessToken,refreshToken);
     }
 }

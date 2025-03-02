@@ -7,4 +7,5 @@ public class userDTO {
     private Long id;
     private String email;
     private String name;
+    private Long sessionCount;
 }
